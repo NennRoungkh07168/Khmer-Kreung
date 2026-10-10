@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+
+// The build number from GitHub Actions becomes the version code automatically,
+// so every new build installs as an update. You never need to edit it.
+def buildNumber = (project.findProperty('vc') ?: '1').toString().toInteger()
+
+android {
+    namespace 'com.flavouratlas.app'
+    compileSdk 34
+    defaultConfig {
+        applicationId "com.flavouratlas.app"
+        minSdk 26
+        targetSdk 34
+        versionCode buildNumber
+        versionName "1.0." + buildNumber
+    }
+    signingConfigs {
+        // Fixed key: keeps your saved notes and photos when you install updates.
+        fixed {
+            storeFile rootProject.file('keystore/flavour-atlas.jks')
+            storePassword 'flavouratlas'
+            keyAlias 'flavouratlas'
+            keyPassword 'flavouratlas'
+        }
+    }
+    buildTypes {
+        debug { signingConfig signingConfigs.fixed }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.fixed
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
